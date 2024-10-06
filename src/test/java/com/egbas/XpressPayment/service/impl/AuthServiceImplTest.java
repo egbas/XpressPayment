@@ -2,7 +2,6 @@ package com.egbas.XpressPayment.service.impl;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.util.Map;
@@ -20,12 +19,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -57,7 +54,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testRegister_Success() {
+    void register_success_test() {
         when(userRepository.findByEmail(registerRequest.getEmail())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(registerRequest.getPassword())).thenReturn("encodedPassword");
 
@@ -69,7 +66,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testRegister_InvalidEmail() {
+    void invalidEmail_test() {
         RegisterRequest invalidEmailRequest = new RegisterRequest("John", "Doe", "invalid-email", "password123");
 
         ApiResponse<?> response = authService.register(invalidEmailRequest);
@@ -80,7 +77,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testRegister_UserAlreadyExists() {
+    void userAlreadyExists_test() {
         when(userRepository.findByEmail(registerRequest.getEmail())).thenReturn(Optional.of(new User()));
 
         ApiResponse<?> response = authService.register(registerRequest);
@@ -91,7 +88,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testLogin_Success() {
+    void login_success_test() {
         User user = new User();
         user.setEmail(loginRequest.getEmail());
         user.setPassword("encodedPassword");
@@ -115,7 +112,7 @@ public class AuthServiceImplTest {
     }
 
     @Test
-    void testLogin_InvalidCredentials() {
+    void invalidCredentials_test() {
         when(userRepository.findByEmail(loginRequest.getEmail())).thenReturn(Optional.empty());
 
         assertThrows(UsernameNotFoundException.class, () -> authService.login(loginRequest));
